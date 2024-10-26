@@ -16,7 +16,7 @@
         const form = document.getElementById('registerform');
         const usernameField = document.getElementById("username")
         const passwordField = document.getElementById("password")
-        form.addEventListener('submit', async e => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const response = await fetch("/signup" , {
