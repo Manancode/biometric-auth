@@ -1,6 +1,6 @@
 const { randomUUID } = require("crypto")
 const express = require("express")
-const {generateRegistrationOptions} = require("@simplewebauthn/server")
+const {generateRegistrationOptions, verifyAuthenticationResponse} = require("@simplewebauthn/server")
 const cors = require("cors")
 const crypto = require("node:crypto")
 
@@ -49,7 +49,27 @@ app.post("/register-challenge" , async (req,res)=>{
 })
 
 
-app.post("/register-verify" , async )
+app.post("/register-verify" , async(req,res)=>{
+    const {userid , cred} = req.body
+    const user = userStore[userid]
+    const challenge = challengeStore[userid]
+
+    const verificationresult = await verifyAuthenticationResponse({
+        expectedChallenge: challenge,
+        expectedOrigin:"http://localhost:3000",
+        expectedRPID: "example.com",
+        response: cred
+    })
+    if (verificationresult === "valid") {
+        userStore[userid].passkey = verificationresult.registrationInfo
+        console.log("user verified")
+        return res.json({message : "user verified"})
+        } else {   
+            return res.status(401).json({error : "invalid credentials"})
+            }
+
+            })
+
 
 app.listen(3000 , ()=>{
     console.log("server is running on port 3000")

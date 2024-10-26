@@ -28,6 +28,14 @@
 
                 const authresponse = await SimpleWebAuthnBrowser.startRegistration(options)
                 console.log(authresponse)
+
+                await fetch('/register-verify' , {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({userid: userid, cred: authresponse})
+                })
         })
     </script>
 </body>
